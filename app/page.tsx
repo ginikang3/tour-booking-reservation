@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, X, Users, Compass, CheckCircle2, Waves } from "lucide-react";
+import { X, Users, CalendarDays, CheckCircle2, Waves, MessageCircle, ChevronRight } from "lucide-react";
 import { 
   format, addMonths, subMonths, startOfMonth, endOfMonth, 
   startOfWeek, endOfWeek, isSameMonth, isSameDay, eachDayOfInterval 
@@ -10,15 +10,22 @@ import {
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
+// 1. 투어 상품 데이터
+const TOURS = [
+  { id: 'snorkel', name: "Snorkel Tour", price: 50, desc: "Explora los arrecifes más bellos de Cancún." },
+  { id: 'isla', name: "Isla Mujeres Tour", price: 80, desc: "Un día inolvidable en catamarán por el Caribe." },
+  { id: 'sunset', name: "Sunset Tour", price: 60, desc: "Disfruta el atardecer con bebidas y música." },
+];
+
 export default function TourBookingPage() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [selectedTour, setSelectedTour] = useState(TOURS[0]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [guests, setGuests] = useState(1);
 
-  const tourTimes = ["09:00 AM", "11:30 AM", "02:00 PM"];
+  // 달력 계산 로직
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -26,62 +33,108 @@ export default function TourBookingPage() {
   const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
 
   return (
-    <main className="min-h-screen bg-white text-[#0f3d3e] font-sans overflow-x-hidden">
-      {/* --- HERO SECTION: 박스 제거하고 텍스트에 그림자 효과 --- */}
-      <section className="relative h-screen flex flex-col items-center justify-center text-center px-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          className="z-10"
-        >
-          <div className="flex justify-center mb-6 text-white drop-shadow-lg">
-            <Waves size={48} className="animate-bounce" />
-          </div>
-          <h1 className="text-6xl md:text-9xl font-black mb-4 tracking-tighter text-white drop-shadow-[0_5px_15px_rgba(0,0,0,0.4)] leading-none">
-            MAREA DE <br /> <span className="text-[#00d1c1]">VENUS</span>
-          </h1>
-          <p className="text-white text-lg md:text-xl font-bold mb-12 max-w-lg mx-auto drop-shadow-md">
-            Explora Isla Mujeres, Chichén Itzá y los cenotes más mágicos con nosotros.
-          </p>
-          <button 
-            onClick={() => { setIsBookingOpen(true); setIsFinished(false); }}
-            className="px-14 py-6 bg-[#00d1c1] text-white font-black rounded-full hover:bg-white hover:text-[#00d1c1] transition-all transform hover:scale-110 uppercase text-sm tracking-[0.2em] shadow-2xl"
+    <main className="min-h-screen bg-[#F8FAFC] text-[#0f3d3e] font-sans overflow-x-hidden">
+      {/* --- HERO SECTION: 배경을 /beach-bg.jpg로 고정 --- */}
+      <section className="relative h-[75vh] flex flex-col items-center justify-center text-center px-6">
+        <div className="z-10 mt-[-50px]">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            className="text-6xl md:text-8xl font-black mb-4 tracking-tighter text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)] uppercase leading-none"
           >
-            Reservar Ahora
-          </button>
-        </motion.div>
-
-        {/* 배경 이미지 (인스타 감성 바다) */}
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80')] bg-cover bg-center" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+            MAREA DE <br /> <span className="text-[#00d1c1]">VENUS</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+            className="text-white text-lg md:text-xl font-bold mb-8 drop-shadow-lg italic opacity-90"
+          >
+            Explora la magia de Cancún con nosotros
+          </motion.p>
+        </div>
+        
+        {/* 직접 다운로드해서 넣은 배경 이미지 참조 */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/beach-bg.jpg')" }} 
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#F8FAFC]" />
       </section>
+
+      {/* --- TOUR SELECTION SECTION --- */}
+      <section className="max-w-6xl mx-auto px-6 -mt-24 relative z-20 pb-32">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-black flex items-center gap-2 text-[#0f3d3e]">
+            <Waves className="text-[#00d1c1] animate-pulse" /> Selecciona tu Tour
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {TOURS.map((tour) => (
+            <motion.div 
+              key={tour.id}
+              whileHover={{ y: -10 }}
+              className={cn(
+                "bg-white p-8 rounded-[3rem] shadow-2xl cursor-pointer border-[3px] transition-all relative overflow-hidden",
+                selectedTour.id === tour.id ? "border-[#00d1c1]" : "border-transparent opacity-90 hover:opacity-100"
+              )}
+              onClick={() => setSelectedTour(tour)}
+            >
+              {selectedTour.id === tour.id && (
+                <div className="absolute top-6 right-6 text-[#00d1c1]">
+                  <CheckCircle2 size={24} fill="#00d1c1" className="text-white" />
+                </div>
+              )}
+              <h3 className="text-2xl font-black mb-3">{tour.name}</h3>
+              <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">{tour.desc}</p>
+              
+              <div className="flex justify-between items-end mt-4">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Desde</span>
+                  <span className="text-3xl font-black text-[#00d1c1]">${tour.price} <small className="text-xs text-gray-400">USD</small></span>
+                </div>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setSelectedTour(tour); setIsBookingOpen(true); }}
+                  className="bg-[#0f3d3e] text-white w-14 h-14 rounded-2xl flex items-center justify-center hover:bg-[#00d1c1] transition-colors shadow-lg"
+                >
+                  <ChevronRight size={24} />
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* --- WHATSAPP FLOATING BUTTON --- */}
+      <a 
+        href="https://wa.me/521" // 여기에 멕시코 번호만 넣으면 끝
+        target="_blank"
+        className="fixed bottom-10 right-10 z-[60] bg-[#25D366] text-white p-5 rounded-full shadow-[0_15px_30px_rgba(37,211,102,0.4)] flex items-center gap-2 hover:scale-110 transition-transform font-black text-sm uppercase tracking-tighter"
+      >
+        <MessageCircle fill="white" />
+        <span className="hidden md:inline">¿Alguna duda?</span>
+      </a>
 
       {/* --- BOOKING MODAL --- */}
       <AnimatePresence>
         {isBookingOpen && (
           <motion.div 
             initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 250 }}
-            className="fixed inset-0 z-50 bg-[#F0F9F9] flex flex-col overflow-y-auto"
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-50 bg-[#f0f9f9] flex flex-col overflow-y-auto"
           >
-            <div className="flex items-center justify-between p-6 bg-white border-b border-[#00d1c1]/10 sticky top-0 z-10">
-              <span className="font-black text-[#00d1c1] tracking-tighter text-xl uppercase">Marea de Venus</span>
-              <button onClick={() => setIsBookingOpen(false)} className="p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 transition-colors"><X size={24} /></button>
+            <div className="flex items-center justify-between p-6 bg-white border-b sticky top-0 z-10">
+              <span className="font-black text-[#00d1c1] tracking-tighter uppercase text-sm">
+                Reservar: <span className="text-[#0f3d3e]">{selectedTour.name}</span>
+              </span>
+              <button onClick={() => setIsBookingOpen(false)} className="p-3 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors"><X size={24} /></button>
             </div>
 
             <div className="p-8 max-w-xl mx-auto w-full">
               {!isFinished ? (
                 <div className="space-y-8">
-                  <div className="text-center mb-4">
-                    <h2 className="text-3xl font-black tracking-tight text-[#0f3d3e]">¡Tu Aventura Comienza!</h2>
-                    <p className="text-gray-500 font-medium">Selecciona tu fecha y prepárate para la magia.</p>
-                  </div>
-
-                  <div className="bg-white p-6 rounded-[2.5rem] shadow-xl shadow-[#00d1c1]/5 border border-[#00d1c1]/10">
-                    <div className="flex items-center justify-between mb-8 px-2 font-bold">
-                      <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}><ChevronLeft /></button>
-                      <span className="capitalize text-lg">{format(currentMonth, "MMMM yyyy", { locale: es })}</span>
-                      <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}><ChevronRight /></button>
+                  {/* Step 1: Date */}
+                  <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-[#00d1c1]/5 border border-[#00d1c1]/10">
+                    <div className="flex items-center gap-2 mb-8 font-black text-[#0f3d3e] text-[10px] uppercase tracking-[0.2em]">
+                      <CalendarDays size={16} className="text-[#00d1c1]" /> 1. Elige tu fecha
                     </div>
                     <div className="grid grid-cols-7 gap-1">
                       {calendarDays.map((day, idx) => (
@@ -90,7 +143,7 @@ export default function TourBookingPage() {
                           className={cn(
                             "h-11 w-11 mx-auto flex items-center justify-center rounded-2xl text-sm transition-all",
                             !isSameMonth(day, monthStart) && "text-gray-200",
-                            isSameDay(day, selectedDate) ? "bg-[#00d1c1] text-white font-bold shadow-lg scale-110" : "hover:bg-[#f0f9f9] text-gray-600"
+                            isSameDay(day, selectedDate) ? "bg-[#00d1c1] text-white font-black shadow-lg scale-110" : "hover:bg-gray-50 text-gray-600 font-semibold"
                           )}
                         >
                           {format(day, "d")}
@@ -99,71 +152,50 @@ export default function TourBookingPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4">
+                  {/* Step 2: Guest & Contact */}
+                  <div className="space-y-4">
                     <div className="bg-white p-6 rounded-[2rem] border border-[#00d1c1]/10 flex items-center justify-between shadow-sm">
-                      <div className="flex items-center gap-3 font-bold"><Users className="text-[#00d1c1]" /><span>Personas</span></div>
-                      <div className="flex items-center gap-4 bg-gray-50 p-1 rounded-xl">
-                        <button onClick={() => setGuests(Math.max(1, guests-1))} className="w-10 h-10 font-bold">-</button>
-                        <span className="font-black text-lg w-6 text-center">{guests}</span>
-                        <button onClick={() => setGuests(guests+1)} className="w-10 h-10 font-bold">+</button>
+                      <div className="flex items-center gap-3 font-black text-xs uppercase tracking-tighter"><Users className="text-[#00d1c1]" /><span>Personas</span></div>
+                      <div className="flex items-center gap-4 bg-gray-50 p-1 rounded-2xl">
+                        <button onClick={() => setGuests(Math.max(1, guests-1))} className="w-12 h-12 font-black text-xl text-[#0f3d3e]">-</button>
+                        <span className="font-black text-xl w-6 text-center">{guests}</span>
+                        <button onClick={() => setGuests(guests+1)} className="w-12 h-12 font-black text-xl text-[#0f3d3e]">+</button>
                       </div>
                     </div>
-
-                    <div className="bg-white p-6 rounded-[2rem] border border-[#00d1c1]/10 space-y-4 shadow-sm">
-                      <div className="flex items-center gap-3 font-bold"><Compass className="text-[#00d1c1]" /><span>Sesión</span></div>
-                      <div className="grid grid-cols-3 gap-2">
-                        {tourTimes.map(t => (
-                          <button 
-                            key={t} onClick={() => setSelectedTime(t)}
-                            className={cn(
-                              "py-4 rounded-2xl text-[10px] font-black transition-all border",
-                              selectedTime === t ? "bg-[#0f3d3e] text-white border-[#0f3d3e]" : "bg-white text-gray-400 border-gray-100 hover:border-[#00d1c1]"
-                            )}
-                          >
-                            {t}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                    <input type="text" placeholder="Tu Nombre Completo" className="w-full bg-white border border-[#00d1c1]/10 p-6 rounded-[2rem] outline-none focus:ring-2 focus:ring-[#00d1c1]/20 font-bold transition-all" />
+                    <input type="tel" placeholder="WhatsApp (Ej: +52 1...)" className="w-full bg-white border border-[#00d1c1]/10 p-6 rounded-[2rem] outline-none focus:ring-2 focus:ring-[#00d1c1]/20 font-bold transition-all" />
                   </div>
 
-                  <div className="space-y-3 pb-20 mt-4">
-                    <input type="text" placeholder="Nombre" className="w-full bg-white border border-gray-100 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-[#00d1c1]/20 transition-all" />
-                    <input type="tel" placeholder="WhatsApp" className="w-full bg-white border border-gray-100 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-[#00d1c1]/20 transition-all" />
+                  {/* CTA */}
+                  <div className="pt-4 pb-20">
                     <button 
                       onClick={() => setIsFinished(true)}
-                      disabled={!selectedTime}
-                      className="w-full py-6 bg-[#00d1c1] text-white font-black rounded-[2rem] shadow-xl shadow-[#00d1c1]/30 active:scale-95 transition-all mt-4 uppercase tracking-widest"
+                      className="w-full py-7 bg-[#00d1c1] text-white font-black rounded-[2.5rem] shadow-[0_20px_40px_rgba(0,209,193,0.3)] active:scale-95 transition-all uppercase tracking-[0.2em] text-sm"
                     >
                       Confirmar Reserva
                     </button>
+                    <p className="mt-6 text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
+                      Sin pago previo. Te contactaremos por WhatsApp <br /> para confirmar disponibilidad.
+                    </p>
                   </div>
                 </div>
               ) : (
-                /* --- SUCCESS STATE (예약 완료) --- */
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center justify-center text-center py-20"
-                >
-                  <div className="w-24 h-24 bg-[#00d1c1] text-white rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-[#00d1c1]/40">
-                    <CheckCircle2 size={50} />
+                /* --- SUCCESS STATE --- */
+                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center py-20">
+                  <div className="w-24 h-24 bg-[#00d1c1] text-white rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-[#00d1c1]/30">
+                    <CheckCircle2 size={48} />
                   </div>
-                  <h2 className="text-4xl font-black tracking-tighter text-[#0f3d3e] mb-4 uppercase">¡Todo Listo!</h2>
-                  <p className="text-gray-500 font-medium max-w-[280px] mb-12">
-                    Te hemos enviado un mensaje de confirmación a tu **WhatsApp**. ¡Nos vemos pronto!
-                  </p>
-                  <div className="bg-white p-8 rounded-[2.5rem] border border-[#00d1c1]/10 w-full text-left space-y-4 shadow-sm">
-                    <div className="pb-4 border-b border-gray-50"><p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tu Experiencia</p></div>
-                    <p className="font-bold text-[#0f3d3e]">📅 {format(selectedDate, "d 'de' MMMM", { locale: es })}</p>
-                    <p className="font-bold text-[#0f3d3e]">⏰ {selectedTime}</p>
-                    <p className="font-bold text-[#0f3d3e]">👥 {guests} {guests > 1 ? 'Viajeros' : 'Viajero'}</p>
+                  <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter text-[#0f3d3e]">¡RECIBIDO!</h2>
+                  <p className="text-gray-500 font-medium mb-12">Te escribiremos a WhatsApp en unos minutos <br /> para confirmar tu aventura.</p>
+                  
+                  <div className="bg-white p-8 rounded-[3rem] w-full text-left border border-[#00d1c1]/10 space-y-4 shadow-sm mb-12">
+                    <p className="font-bold text-gray-400 text-xs uppercase tracking-widest border-b pb-4 mb-4">Detalles del Tour</p>
+                    <p className="font-black text-[#0f3d3e] flex justify-between"><span>Tour:</span> <span className="text-[#00d1c1]">{selectedTour.name}</span></p>
+                    <p className="font-black text-[#0f3d3e] flex justify-between"><span>Fecha:</span> <span>{format(selectedDate, "d 'de' MMMM", { locale: es })}</span></p>
+                    <p className="font-black text-[#0f3d3e] flex justify-between text-xl pt-4 border-t"><span>Total:</span> <span>${selectedTour.price * guests} USD</span></p>
                   </div>
-                  <button 
-                    onClick={() => setIsBookingOpen(false)}
-                    className="mt-12 text-[#00d1c1] font-black text-xs uppercase tracking-widest border-b-2 border-[#00d1c1] pb-1"
-                  >
-                    Cerrar
-                  </button>
+                  
+                  <button onClick={() => setIsBookingOpen(false)} className="text-[#00d1c1] font-black uppercase tracking-[0.2em] text-xs border-b-2 border-[#00d1c1] pb-1">Cerrar</button>
                 </motion.div>
               )}
             </div>
