@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Users, CalendarDays, CheckCircle2, Waves, MessageCircle, ChevronRight } from "lucide-react";
 import { 
-  format, addMonths, subMonths, startOfMonth, endOfMonth, 
+  format, startOfMonth, endOfMonth, 
   startOfWeek, endOfWeek, isSameMonth, isSameDay, eachDayOfInterval 
 } from "date-fns";
 import { es } from "date-fns/locale";
@@ -21,7 +21,7 @@ export default function TourBookingPage() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [selectedTour, setSelectedTour] = useState(TOURS[0]);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [currentMonth] = useState(new Date()); // setCurrentMonth 제거
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [guests, setGuests] = useState(1);
 
@@ -34,7 +34,7 @@ export default function TourBookingPage() {
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] text-[#0f3d3e] font-sans overflow-x-hidden">
-      {/* --- HERO SECTION: 배경을 /beach-bg.jpg로 고정 --- */}
+      {/* --- HERO SECTION --- */}
       <section className="relative h-[75vh] flex flex-col items-center justify-center text-center px-6">
         <div className="z-10 mt-[-50px]">
           <motion.h1 
@@ -51,7 +51,6 @@ export default function TourBookingPage() {
           </motion.p>
         </div>
         
-        {/* 직접 다운로드해서 넣은 배경 이미지 참조 */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('/beach-bg.jpg')" }} 
@@ -105,7 +104,7 @@ export default function TourBookingPage() {
 
       {/* --- WHATSAPP FLOATING BUTTON --- */}
       <a 
-        href="https://wa.me/521" // 여기에 멕시코 번호만 넣으면 끝
+        href="https://wa.me/521" 
         target="_blank"
         className="fixed bottom-10 right-10 z-[60] bg-[#25D366] text-white p-5 rounded-full shadow-[0_15px_30px_rgba(37,211,102,0.4)] flex items-center gap-2 hover:scale-110 transition-transform font-black text-sm uppercase tracking-tighter"
       >
@@ -131,7 +130,6 @@ export default function TourBookingPage() {
             <div className="p-8 max-w-xl mx-auto w-full">
               {!isFinished ? (
                 <div className="space-y-8">
-                  {/* Step 1: Date */}
                   <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-[#00d1c1]/5 border border-[#00d1c1]/10">
                     <div className="flex items-center gap-2 mb-8 font-black text-[#0f3d3e] text-[10px] uppercase tracking-[0.2em]">
                       <CalendarDays size={16} className="text-[#00d1c1]" /> 1. Elige tu fecha
@@ -152,7 +150,6 @@ export default function TourBookingPage() {
                     </div>
                   </div>
 
-                  {/* Step 2: Guest & Contact */}
                   <div className="space-y-4">
                     <div className="bg-white p-6 rounded-[2rem] border border-[#00d1c1]/10 flex items-center justify-between shadow-sm">
                       <div className="flex items-center gap-3 font-black text-xs uppercase tracking-tighter"><Users className="text-[#00d1c1]" /><span>Personas</span></div>
@@ -162,11 +159,10 @@ export default function TourBookingPage() {
                         <button onClick={() => setGuests(guests+1)} className="w-12 h-12 font-black text-xl text-[#0f3d3e]">+</button>
                       </div>
                     </div>
-                    <input type="text" placeholder="Tu Nombre Completo" className="w-full bg-white border border-[#00d1c1]/10 p-6 rounded-[2rem] outline-none focus:ring-2 focus:ring-[#00d1c1]/20 font-bold transition-all" />
-                    <input type="tel" placeholder="WhatsApp (Ej: +52 1...)" className="w-full bg-white border border-[#00d1c1]/10 p-6 rounded-[2rem] outline-none focus:ring-2 focus:ring-[#00d1c1]/20 font-bold transition-all" />
+                    <input type="text" placeholder="Tu Nombre Completo" className="w-full bg-white border border-[#00d1c1]/10 p-6 rounded-[2rem] outline-none focus:ring-2 focus:ring-[#00d1c1]/20 font-bold transition-all text-black" />
+                    <input type="tel" placeholder="WhatsApp (Ej: +52 1...)" className="w-full bg-white border border-[#00d1c1]/10 p-6 rounded-[2rem] outline-none focus:ring-2 focus:ring-[#00d1c1]/20 font-bold transition-all text-black" />
                   </div>
 
-                  {/* CTA */}
                   <div className="pt-4 pb-20">
                     <button 
                       onClick={() => setIsFinished(true)}
@@ -180,7 +176,6 @@ export default function TourBookingPage() {
                   </div>
                 </div>
               ) : (
-                /* --- SUCCESS STATE --- */
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center py-20">
                   <div className="w-24 h-24 bg-[#00d1c1] text-white rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-[#00d1c1]/30">
                     <CheckCircle2 size={48} />
