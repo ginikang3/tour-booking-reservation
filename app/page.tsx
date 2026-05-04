@@ -73,11 +73,9 @@ export default function TourBookingPage() {
   const [selectedDate, setSelectedDate] = useState(today); 
   const [guests, setGuests] = useState(1);
   
-  // 입력 정보 상태
   const [userName, setUserName] = useState("");
   const [phone, setPhone] = useState<string | undefined>();
 
-  // 예약 가능 여부 확인 (이름과 전화번호 필수)
   const isFormValid = userName.trim().length > 0 && phone && phone.length > 5;
 
   const { calendarDays, monthStart } = useMemo(() => {
@@ -131,21 +129,23 @@ export default function TourBookingPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#F8FAFC]" />
       </section>
 
-      {/* --- TOUR SELECTION SECTION --- (Read-Only) */}
-      <section className="max-w-6xl mx-auto px-6 -mt-24 relative z-20 pb-32">
-        <div className="flex items-center justify-between mb-8">
+      {/* --- TOUR SELECTION SECTION (Mobile Horizontal Scroll) --- */}
+      <section className="max-w-6xl mx-auto -mt-24 relative z-20 pb-32">
+        <div className="px-6 flex items-center justify-between mb-8">
           <h2 className="text-2xl font-black flex items-center gap-2 text-[#0f3d3e]">
             <Waves className="text-[#00d1c1] animate-pulse" /> Selecciona tu Tour
           </h2>
+          <span className="md:hidden text-[10px] font-black text-gray-400 uppercase tracking-widest animate-bounce">Desliza →</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+        {/* 모바일 가로 스크롤 컨테이너 */}
+        <div className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible px-6 pb-8 no-scrollbar snap-x snap-mandatory">
           {TOURS.map((tour) => (
             <motion.div 
               key={tour.id}
               whileHover={{ y: -10 }}
               className={cn(
-                "bg-white rounded-[3rem] shadow-2xl cursor-pointer border-[3px] transition-all relative overflow-hidden flex flex-col h-full",
+                "snap-center shrink-0 min-w-[85vw] md:min-w-0 bg-white rounded-[3rem] shadow-2xl cursor-pointer border-[3px] transition-all relative overflow-hidden flex flex-col h-full",
                 selectedTour.id === tour.id ? "border-[#00d1c1]" : "border-transparent opacity-90 hover:opacity-100"
               )}
               onClick={() => setSelectedTour(tour)}
@@ -211,7 +211,6 @@ export default function TourBookingPage() {
             <div className="p-8 max-w-xl mx-auto w-full">
               {!isFinished ? (
                 <div className="space-y-8 pb-20">
-                  {/* 날짜 선택 */}
                   <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-[#00d1c1]/5 border border-[#00d1c1]/10">
                     <div className="flex items-center justify-between mb-8">
                       <div className="flex items-center gap-2 font-black text-[#0f3d3e] text-[10px] uppercase tracking-[0.2em]">
@@ -255,7 +254,6 @@ export default function TourBookingPage() {
                   </div>
 
                   <div className="space-y-4">
-                    {/* 인원 선택 */}
                     <div className="bg-white p-6 rounded-[2rem] border border-[#00d1c1]/10 flex items-center justify-between shadow-sm">
                       <div className="flex items-center gap-3 font-black text-xs uppercase tracking-tighter"><Users className="text-[#00d1c1]" /><span>Personas</span></div>
                       <div className="flex items-center gap-4 bg-gray-50 p-1 rounded-2xl">
@@ -265,7 +263,6 @@ export default function TourBookingPage() {
                       </div>
                     </div>
                     
-                    {/* 이름 입력 */}
                     <input 
                       type="text" 
                       value={userName}
@@ -274,7 +271,6 @@ export default function TourBookingPage() {
                       className="w-full bg-white border border-[#00d1c1]/10 p-6 rounded-[2rem] outline-none focus:ring-2 focus:ring-[#00d1c1]/20 font-bold transition-all text-black" 
                     />
                     
-                    {/* 번호 입력 (글로벌) */}
                     <div className="global-phone-input-container">
                       <PhoneInput
                         international
@@ -300,13 +296,9 @@ export default function TourBookingPage() {
                     >
                       Confirmar Reserva
                     </button>
-                    <p className="mt-6 text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
-                      Sin pago previo. Te contactaremos por WhatsApp <br /> para confirmar disponibilidad.
-                    </p>
                   </div>
                 </div>
               ) : (
-                /* --- 예약 완료 결과창 (Summary) --- */
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center py-20">
                   <div className="w-24 h-24 bg-[#00d1c1] text-white rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-[#00d1c1]/30">
                     <CheckCircle2 size={48} />
@@ -336,6 +328,13 @@ export default function TourBookingPage() {
       </AnimatePresence>
 
       <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
         .global-phone-input-container .PhoneInputInput {
           outline: none;
           background: transparent;
