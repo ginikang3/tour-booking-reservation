@@ -27,7 +27,6 @@ const TOURS = [
       "Nado en cenote sagrado (Saamal)",
       "Visita por Valladolid, Yucatán"
     ],
-    notIncluded: ["Bebidas en el restaurante", "Impuesto estatal (CULTUR)", "Propinas"],
     image: "chichen_3.webp"
   },
   { 
@@ -43,7 +42,6 @@ const TOURS = [
       "Barra libre a bordo",
       "Puesta del sol con música en vivo"
     ],
-    notIncluded: ["Impuesto de muelle ($15 USD approx)", "Fotos profesionales", "Transporte al ferry"],
     image: "cozumel_3.webp"
   },
   { 
@@ -58,7 +56,6 @@ const TOURS = [
       "Tiempo libre en club de playa",
       "Visita a Playa Norte"
     ],
-    notIncluded: ["Impuesto de muelle ($20 USD approx)", "Carritos de golf en la isla", "Propinas"],
     image: "isla mujeres_3.webp"
   },
 ];
@@ -222,18 +219,7 @@ export default function TourBookingPage() {
                       </div>
                     </div>
 
-                    <div className="bg-gray-50 p-8 rounded-[2.5rem] border border-dashed border-gray-200">
-                      <h3 className="flex items-center gap-2 font-black text-gray-400 uppercase tracking-widest text-xs mb-6">
-                        <AlertCircle size={18} /> No incluye
-                      </h3>
-                      <div className="grid grid-cols-1 gap-3">
-                        {selectedTour.notIncluded?.map((item, i) => (
-                          <div key={i} className="flex items-center gap-3 opacity-60">
-                            <span className="text-gray-400 text-sm font-bold">— {item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    {/* No Incluye section was here - DELETED per request */}
 
                     <div className="space-y-6 pt-6">
                       <h3 className="flex items-center gap-2 font-black text-[#0f3d3e] uppercase tracking-widest text-xs">
@@ -298,10 +284,39 @@ export default function TourBookingPage() {
                   </div>
                 </>
               ) : (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center text-center py-20 px-6">
-                  <div className="w-24 h-24 bg-[#00d1c1] text-white rounded-full flex items-center justify-center mb-8 shadow-2xl"><CheckCircle2 size={48} /></div>
-                  <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter">¡LISTO!</h2>
-                  <p className="text-gray-500 font-medium mb-12">Te contactaremos al <strong>{phone}</strong> en breve.</p>
+                /* Success View - RESTORED & UPDATED with Summary Info */
+                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center py-20 px-6">
+                  <div className="w-24 h-24 bg-[#00d1c1] text-white rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-[#00d1c1]/30">
+                    <CheckCircle2 size={48} />
+                  </div>
+                  <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter text-[#0f3d3e]">¡PEDIDO ENVIADO!</h2>
+                  <p className="text-gray-500 font-medium mb-12">
+                    Hola <strong>{userName}</strong>, <br />
+                    Te contactaremos al <strong>{phone}</strong> vía WhatsApp <br /> 
+                    en unos minutos para confirmar tu aventura.
+                  </p>
+                  
+                  {/* Reservation Detail Card */}
+                  <div className="bg-gray-50 p-8 rounded-[3rem] w-full text-left border border-[#00d1c1]/10 space-y-4 shadow-sm mb-12">
+                    <p className="font-bold text-gray-400 text-[10px] uppercase tracking-widest border-b pb-4 mb-4">Resumen de Reserva</p>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-black text-gray-400 uppercase text-[10px]">Tour</span>
+                      <span className="font-black text-[#00d1c1]">{selectedTour.name}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-black text-gray-400 uppercase text-[10px]">Fecha</span>
+                      <span className="font-black text-[#0f3d3e]">{format(selectedDate, "d 'de' MMMM", { locale: es })}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-black text-gray-400 uppercase text-[10px]">Personas</span>
+                      <span className="font-black text-[#0f3d3e]">{guests}</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-4 border-t">
+                      <span className="font-black text-gray-400 uppercase text-[10px]">Total Estimado</span>
+                      <span className="font-black text-[#0f3d3e] text-xl">${selectedTour.price * guests} USD</span>
+                    </div>
+                  </div>
+
                   <button onClick={() => { setIsBookingOpen(false); setIsFinished(false); }} className="text-[#00d1c1] font-black uppercase tracking-widest text-xs border-b-2 border-[#00d1c1] pb-1">Cerrar</button>
                 </motion.div>
               )}
