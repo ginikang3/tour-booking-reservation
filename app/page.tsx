@@ -121,11 +121,7 @@ export default function TourBookingPage() {
             Explora la magia de Cancún con nosotros
           </motion.p>
         </div>
-        
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/hero.jpg')" }} 
-        />
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/hero.jpg')" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#F8FAFC]" />
       </section>
 
@@ -137,7 +133,6 @@ export default function TourBookingPage() {
           </h2>
         </div>
 
-        {/* 모바일 가로형 카드 세로 나열 / 데스크탑 3열 그리드 */}
         <div className="flex flex-col md:grid md:grid-cols-3 gap-6">
           {TOURS.map((tour) => (
             <motion.div 
@@ -149,7 +144,6 @@ export default function TourBookingPage() {
               )}
               onClick={() => setSelectedTour(tour)}
             >
-              {/* 이미지 영역: 모바일에서는 왼쪽 고정, 데스크탑은 상단 */}
               <div className="w-36 md:w-full h-full md:h-52 shrink-0 relative">
                 <img src={tour.image} alt={tour.name} className="w-full h-full object-cover" />
                 {selectedTour.id === tour.id && (
@@ -159,11 +153,9 @@ export default function TourBookingPage() {
                 )}
               </div>
 
-              {/* 텍스트 영역: 모바일과 데스크탑 각각 최적화 */}
               <div className="p-4 md:p-8 flex flex-col flex-grow justify-between overflow-hidden">
                 <div>
                   <h3 className="text-lg md:text-2xl font-black mb-2 md:mb-6 leading-tight truncate md:whitespace-normal">{tour.name}</h3>
-                  {/* 데스크탑에서만 보이는 상세 리스트 (Read-Only 유지) */}
                   <div className="hidden md:flex flex-col gap-3 mb-8">
                     {tour.features.map((feature, index) => (
                       <div key={index} className="flex items-start gap-2">
@@ -227,7 +219,6 @@ export default function TourBookingPage() {
                         <button onClick={handleNextMonth} className="text-gray-400 hover:text-[#00d1c1] transition-colors"><ChevronRight size={20} /></button>
                       </div>
                     </div>
-                    
                     <div className="grid grid-cols-7 gap-1">
                       {["D", "L", "M", "M", "J", "V", "S"].map(d => (
                         <div key={d} className="h-8 flex items-center justify-center text-[10px] font-black text-gray-300">{d}</div>
@@ -237,7 +228,6 @@ export default function TourBookingPage() {
                         const isTooFar = isAfter(day, maxDate);
                         const isDisabled = isPast || isTooFar;
                         const isSelected = isSameDay(day, selectedDate);
-                        
                         return (
                           <button 
                             key={idx} 
@@ -267,7 +257,6 @@ export default function TourBookingPage() {
                         <button onClick={() => setGuests(guests+1)} className="w-12 h-12 font-black text-xl text-[#0f3d3e]">+</button>
                       </div>
                     </div>
-                    
                     <input 
                       type="text" 
                       value={userName}
@@ -275,7 +264,6 @@ export default function TourBookingPage() {
                       placeholder="Tu Nombre Completo" 
                       className="w-full bg-white border border-[#00d1c1]/10 p-6 rounded-[2rem] outline-none focus:ring-2 focus:ring-[#00d1c1]/20 font-bold transition-all text-black" 
                     />
-                    
                     <div className="global-phone-input-container">
                       <PhoneInput
                         international
@@ -315,7 +303,6 @@ export default function TourBookingPage() {
                     Te contactaremos al <strong>{phone}</strong> vía WhatsApp <br /> 
                     en unos minutos para confirmar tu aventura.
                   </p>
-                  
                   <div className="bg-white p-8 rounded-[3rem] w-full text-left border border-[#00d1c1]/10 space-y-4 shadow-sm mb-12">
                     <p className="font-bold text-gray-400 text-xs uppercase tracking-widest border-b pb-4 mb-4">Resumen de Reserva</p>
                     <p className="font-black text-[#0f3d3e] flex justify-between text-sm"><span>Tour:</span> <span className="text-[#00d1c1]">{selectedTour.name}</span></p>
@@ -323,7 +310,6 @@ export default function TourBookingPage() {
                     <p className="font-black text-[#0f3d3e] flex justify-between text-sm"><span>Personas:</span> <span>{guests}</span></p>
                     <p className="font-black text-[#0f3d3e] flex justify-between text-xl pt-4 border-t"><span>Total Estimado:</span> <span>${selectedTour.price * guests} USD</span></p>
                   </div>
-                  
                   <button onClick={() => { setIsBookingOpen(false); setIsFinished(false); }} className="text-[#00d1c1] font-black uppercase tracking-[0.2em] text-xs border-b-2 border-[#00d1c1] pb-1">Cerrar</button>
                 </motion.div>
               )}
