@@ -129,59 +129,61 @@ export default function TourBookingPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#F8FAFC]" />
       </section>
 
-      {/* --- TOUR SELECTION SECTION (Mobile Layout Fixed) --- */}
-      <section className="max-w-6xl mx-auto -mt-24 relative z-20 pb-32">
-        <div className="px-6 flex items-center justify-between mb-8">
+      {/* --- TOUR SELECTION SECTION --- */}
+      <section className="max-w-6xl mx-auto -mt-24 relative z-20 pb-32 px-6">
+        <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-black flex items-center gap-2 text-[#0f3d3e]">
             <Waves className="text-[#00d1c1] animate-pulse" /> Selecciona tu Tour
           </h2>
-          <span className="md:hidden text-[10px] font-black text-gray-400 uppercase tracking-widest animate-pulse">Desliza →</span>
         </div>
 
-        {/* 가로 스크롤 및 카드 레이아웃 정밀 수정 */}
-        <div className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible px-6 pb-12 no-scrollbar snap-x snap-mandatory">
+        {/* 모바일 가로형 카드 세로 나열 / 데스크탑 3열 그리드 */}
+        <div className="flex flex-col md:grid md:grid-cols-3 gap-6">
           {TOURS.map((tour) => (
             <motion.div 
               key={tour.id}
+              whileHover={{ y: -10 }}
               className={cn(
-                "snap-center shrink-0 w-[calc(100vw-48px)] md:w-auto bg-white rounded-[3rem] shadow-2xl cursor-pointer border-[3px] transition-all relative overflow-hidden flex flex-col",
-                selectedTour.id === tour.id ? "border-[#00d1c1]" : "border-transparent opacity-95"
+                "flex md:flex-col bg-white rounded-[2.5rem] md:rounded-[3rem] shadow-2xl cursor-pointer border-[3px] transition-all relative overflow-hidden h-44 md:h-full",
+                selectedTour.id === tour.id ? "border-[#00d1c1]" : "border-transparent opacity-95 hover:opacity-100"
               )}
               onClick={() => setSelectedTour(tour)}
             >
-              {/* 이미지 영역 고정 */}
-              <div className="h-64 w-full relative shrink-0">
+              {/* 이미지 영역: 모바일에서는 왼쪽 고정, 데스크탑은 상단 */}
+              <div className="w-36 md:w-full h-full md:h-52 shrink-0 relative">
                 <img src={tour.image} alt={tour.name} className="w-full h-full object-cover" />
                 {selectedTour.id === tour.id && (
-                  <div className="absolute top-6 right-6 z-10">
-                    <CheckCircle2 size={28} fill="#00d1c1" className="text-white shadow-xl" />
+                  <div className="absolute top-4 right-4 text-[#00d1c1] md:block hidden">
+                    <CheckCircle2 size={24} fill="#00d1c1" className="text-white" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
 
-              {/* 정보 영역 */}
-              <div className="p-8 flex flex-col flex-grow bg-white">
-                <h3 className="text-2xl font-black mb-6 tracking-tight">{tour.name}</h3>
-                <div className="space-y-3 mb-8 flex-grow">
-                  {tour.features.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-2">
-                      <CheckCircle2 size={14} className="text-[#00d1c1] shrink-0 mt-0.5" />
-                      <span className="text-gray-500 text-xs font-bold leading-tight">{feature}</span>
-                    </div>
-                  ))}
+              {/* 텍스트 영역: 모바일과 데스크탑 각각 최적화 */}
+              <div className="p-4 md:p-8 flex flex-col flex-grow justify-between overflow-hidden">
+                <div>
+                  <h3 className="text-lg md:text-2xl font-black mb-2 md:mb-6 leading-tight truncate md:whitespace-normal">{tour.name}</h3>
+                  {/* 데스크탑에서만 보이는 상세 리스트 (Read-Only 유지) */}
+                  <div className="hidden md:flex flex-col gap-3 mb-8">
+                    {tour.features.map((feature, index) => (
+                      <div key={index} className="flex items-start gap-2">
+                        <CheckCircle2 size={14} className="text-[#00d1c1] shrink-0 mt-0.5" />
+                        <span className="text-gray-500 text-xs font-bold leading-tight">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                
-                <div className="flex justify-between items-end pt-6 border-t border-gray-50 mt-auto">
+
+                <div className="flex justify-between items-end">
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Desde</span>
-                    <span className="text-3xl font-black text-[#00d1c1]">${tour.price} <small className="text-xs text-gray-400">USD</small></span>
+                    <span className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">Desde</span>
+                    <span className="text-xl md:text-3xl font-black text-[#00d1c1]">${tour.price} <small className="text-[10px] md:text-xs text-gray-400">USD</small></span>
                   </div>
                   <button 
                     onClick={(e) => { e.stopPropagation(); setSelectedTour(tour); setIsBookingOpen(true); }}
-                    className="bg-[#0f3d3e] text-white w-14 h-14 rounded-2xl flex items-center justify-center hover:bg-[#00d1c1] active:scale-90 transition-all shadow-lg"
+                    className="bg-[#0f3d3e] text-white w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center hover:bg-[#00d1c1] transition-colors shadow-lg"
                   >
-                    <ChevronRight size={24} />
+                    <ChevronRight size={20} />
                   </button>
                 </div>
               </div>
@@ -196,7 +198,7 @@ export default function TourBookingPage() {
         <span className="hidden md:inline">¿Alguna duda?</span>
       </a>
 
-      {/* --- BOOKING MODAL --- (Atomic Update) */}
+      {/* --- BOOKING MODAL --- (Read-Only) */}
       <AnimatePresence>
         {isBookingOpen && (
           <motion.div 
@@ -331,13 +333,6 @@ export default function TourBookingPage() {
       </AnimatePresence>
 
       <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
         .global-phone-input-container .PhoneInputInput {
           outline: none;
           background: transparent;
@@ -345,9 +340,6 @@ export default function TourBookingPage() {
           border: none;
           width: 100%;
           color: black;
-        }
-        .global-phone-input-container .PhoneInputCountry {
-          margin-right: 15px;
         }
       `}</style>
     </main>
