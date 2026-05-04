@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Users, CalendarDays, CheckCircle2, Waves, MessageCircle, ChevronRight, ChevronLeft, Info, AlertCircle } from "lucide-react";
+import { X, Users, CalendarDays, CheckCircle2, Waves, MessageCircle, ChevronRight, ChevronLeft, AlertCircle } from "lucide-react";
 import { 
   format, startOfMonth, endOfMonth, 
   startOfWeek, endOfWeek, isSameMonth, isSameDay, 
@@ -102,7 +102,7 @@ export default function TourBookingPage() {
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] text-[#0f3d3e] font-sans overflow-x-hidden">
-      {/* --- HERO SECTION (Read-Only) --- */}
+      {/* --- HERO SECTION --- */}
       <section className="relative h-[75vh] flex flex-col items-center justify-center text-center px-6">
         <div className="z-10 mt-[-50px]">
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-6xl md:text-8xl font-black mb-4 tracking-tighter text-white drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)] uppercase leading-none">
@@ -136,6 +136,7 @@ export default function TourBookingPage() {
               onClick={() => { setSelectedTour(tour); setIsBookingOpen(true); }}
             >
               <div className="w-36 md:w-full h-full md:h-52 shrink-0 relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={tour.image} alt={tour.name} className="w-full h-full object-cover" />
                 <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full md:hidden">
                   <span className="text-[10px] font-black text-[#00d1c1]">DETALLES</span>
@@ -170,13 +171,13 @@ export default function TourBookingPage() {
         </div>
       </section>
 
-      {/* --- WHATSAPP FLOATING BUTTON (Read-Only) --- */}
+      {/* --- WHATSAPP FLOATING BUTTON --- */}
       <a href="https://wa.me/5219842087933" target="_blank" className="fixed bottom-10 right-10 z-[60] bg-[#25D366] text-white p-5 rounded-full shadow-[0_15px_30px_rgba(37,211,102,0.4)] flex items-center gap-2 hover:scale-110 transition-transform font-black text-sm uppercase tracking-tighter">
         <MessageCircle fill="white" />
         <span className="hidden md:inline">¿Alguna duda?</span>
       </a>
 
-      {/* --- EXPANDED BOOKING MODAL (아이디어 3번 적용) --- */}
+      {/* --- EXPANDED BOOKING MODAL --- */}
       <AnimatePresence>
         {isBookingOpen && (
           <motion.div 
@@ -184,7 +185,6 @@ export default function TourBookingPage() {
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="fixed inset-0 z-50 bg-white flex flex-col overflow-y-auto"
           >
-            {/* Header */}
             <div className="flex items-center justify-between p-6 bg-white/80 backdrop-blur-md border-b sticky top-0 z-20">
               <span className="font-black text-[#0f3d3e] tracking-tighter uppercase text-sm">
                 Detalles del Tour
@@ -195,8 +195,8 @@ export default function TourBookingPage() {
             <div className="flex flex-col pb-24">
               {!isFinished ? (
                 <>
-                  {/* Tour Info Section */}
                   <div className="relative w-full h-[40vh] md:h-[50vh]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={selectedTour.image} className="w-full h-full object-cover" alt={selectedTour.name} />
                     <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
                     <div className="absolute bottom-6 left-6">
@@ -206,7 +206,6 @@ export default function TourBookingPage() {
                   </div>
 
                   <div className="px-6 space-y-10 -mt-4 relative z-10">
-                    {/* 1. Includes */}
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-[#00d1c1]/10">
                       <h3 className="flex items-center gap-2 font-black text-[#0f3d3e] uppercase tracking-widest text-xs mb-6">
                         <CheckCircle2 size={18} className="text-[#00d1c1]" /> ¿Qué incluye?
@@ -223,7 +222,6 @@ export default function TourBookingPage() {
                       </div>
                     </div>
 
-                    {/* 2. Not Included */}
                     <div className="bg-gray-50 p-8 rounded-[2.5rem] border border-dashed border-gray-200">
                       <h3 className="flex items-center gap-2 font-black text-gray-400 uppercase tracking-widest text-xs mb-6">
                         <AlertCircle size={18} /> No incluye
@@ -237,13 +235,11 @@ export default function TourBookingPage() {
                       </div>
                     </div>
 
-                    {/* 3. Booking Form (날짜 및 인원) */}
                     <div className="space-y-6 pt-6">
                       <h3 className="flex items-center gap-2 font-black text-[#0f3d3e] uppercase tracking-widest text-xs">
                         <CalendarDays size={18} className="text-[#00d1c1]" /> Selecciona Fecha y Personas
                       </h3>
                       
-                      {/* Calendar (Mini version) */}
                       <div className="bg-white p-6 rounded-[2.5rem] shadow-lg border border-[#00d1c1]/5">
                         <div className="flex items-center justify-between mb-6 px-2">
                           <button onClick={handlePrevMonth} className="p-2"><ChevronLeft size={20} /></button>
@@ -273,7 +269,6 @@ export default function TourBookingPage() {
                         </div>
                       </div>
 
-                      {/* Guest & Contact */}
                       <div className="grid grid-cols-1 gap-4">
                         <div className="bg-white p-5 rounded-[2rem] border border-[#00d1c1]/10 flex items-center justify-between">
                           <span className="font-black text-xs uppercase"><Users size={16} className="inline mr-2 text-[#00d1c1]"/>Personas</span>
@@ -303,7 +298,6 @@ export default function TourBookingPage() {
                   </div>
                 </>
               ) : (
-                /* Success View (Read-Only) */
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center text-center py-20 px-6">
                   <div className="w-24 h-24 bg-[#00d1c1] text-white rounded-full flex items-center justify-center mb-8 shadow-2xl"><CheckCircle2 size={48} /></div>
                   <h2 className="text-4xl font-black mb-4 uppercase tracking-tighter">¡LISTO!</h2>
