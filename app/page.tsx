@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Users, CalendarDays, CheckCircle2, Waves, MessageCircle, ChevronRight, ChevronLeft, AlertCircle } from "lucide-react";
+import { X, Users, CalendarDays, CheckCircle2, Waves, MessageCircle, ChevronRight, ChevronLeft } from "lucide-react";
 import { 
   format, startOfMonth, endOfMonth, 
   startOfWeek, endOfWeek, isSameMonth, isSameDay, 
@@ -219,8 +219,6 @@ export default function TourBookingPage() {
                       </div>
                     </div>
 
-                    {/* No Incluye section was here - DELETED per request */}
-
                     <div className="space-y-6 pt-6">
                       <h3 className="flex items-center gap-2 font-black text-[#0f3d3e] uppercase tracking-widest text-xs">
                         <CalendarDays size={18} className="text-[#00d1c1]" /> Selecciona Fecha y Personas
@@ -284,7 +282,6 @@ export default function TourBookingPage() {
                   </div>
                 </>
               ) : (
-                /* Success View - RESTORED & UPDATED with Summary Info */
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center py-20 px-6">
                   <div className="w-24 h-24 bg-[#00d1c1] text-white rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-[#00d1c1]/30">
                     <CheckCircle2 size={48} />
@@ -296,7 +293,6 @@ export default function TourBookingPage() {
                     en unos minutos para confirmar tu aventura.
                   </p>
                   
-                  {/* Reservation Detail Card */}
                   <div className="bg-gray-50 p-8 rounded-[3rem] w-full text-left border border-[#00d1c1]/10 space-y-4 shadow-sm mb-12">
                     <p className="font-bold text-gray-400 text-[10px] uppercase tracking-widest border-b pb-4 mb-4">Resumen de Reserva</p>
                     <div className="flex justify-between items-center text-sm">
