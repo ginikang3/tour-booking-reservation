@@ -129,38 +129,40 @@ export default function TourBookingPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#F8FAFC]" />
       </section>
 
-      {/* --- TOUR SELECTION SECTION (Mobile Horizontal Scroll) --- */}
+      {/* --- TOUR SELECTION SECTION (Mobile Layout Fixed) --- */}
       <section className="max-w-6xl mx-auto -mt-24 relative z-20 pb-32">
         <div className="px-6 flex items-center justify-between mb-8">
           <h2 className="text-2xl font-black flex items-center gap-2 text-[#0f3d3e]">
             <Waves className="text-[#00d1c1] animate-pulse" /> Selecciona tu Tour
           </h2>
-          <span className="md:hidden text-[10px] font-black text-gray-400 uppercase tracking-widest animate-bounce">Desliza →</span>
+          <span className="md:hidden text-[10px] font-black text-gray-400 uppercase tracking-widest animate-pulse">Desliza →</span>
         </div>
 
-        {/* 모바일 가로 스크롤 컨테이너 */}
-        <div className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible px-6 pb-8 no-scrollbar snap-x snap-mandatory">
+        {/* 가로 스크롤 및 카드 레이아웃 정밀 수정 */}
+        <div className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto md:overflow-visible px-6 pb-12 no-scrollbar snap-x snap-mandatory">
           {TOURS.map((tour) => (
             <motion.div 
               key={tour.id}
-              whileHover={{ y: -10 }}
               className={cn(
-                "snap-center shrink-0 min-w-[85vw] md:min-w-0 bg-white rounded-[3rem] shadow-2xl cursor-pointer border-[3px] transition-all relative overflow-hidden flex flex-col h-full",
-                selectedTour.id === tour.id ? "border-[#00d1c1]" : "border-transparent opacity-90 hover:opacity-100"
+                "snap-center shrink-0 w-[calc(100vw-48px)] md:w-auto bg-white rounded-[3rem] shadow-2xl cursor-pointer border-[3px] transition-all relative overflow-hidden flex flex-col",
+                selectedTour.id === tour.id ? "border-[#00d1c1]" : "border-transparent opacity-95"
               )}
               onClick={() => setSelectedTour(tour)}
             >
-              <div className="h-52 w-full relative">
+              {/* 이미지 영역 고정 */}
+              <div className="h-64 w-full relative shrink-0">
                 <img src={tour.image} alt={tour.name} className="w-full h-full object-cover" />
                 {selectedTour.id === tour.id && (
-                  <div className="absolute top-6 right-6 text-[#00d1c1]">
-                    <CheckCircle2 size={24} fill="#00d1c1" className="text-white" />
+                  <div className="absolute top-6 right-6 z-10">
+                    <CheckCircle2 size={28} fill="#00d1c1" className="text-white shadow-xl" />
                   </div>
                 )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
 
-              <div className="p-8 flex flex-col flex-grow">
-                <h3 className="text-2xl font-black mb-6">{tour.name}</h3>
+              {/* 정보 영역 */}
+              <div className="p-8 flex flex-col flex-grow bg-white">
+                <h3 className="text-2xl font-black mb-6 tracking-tight">{tour.name}</h3>
                 <div className="space-y-3 mb-8 flex-grow">
                   {tour.features.map((feature, index) => (
                     <div key={index} className="flex items-start gap-2">
@@ -169,14 +171,15 @@ export default function TourBookingPage() {
                     </div>
                   ))}
                 </div>
-                <div className="flex justify-between items-end pt-4 border-t border-gray-50">
+                
+                <div className="flex justify-between items-end pt-6 border-t border-gray-50 mt-auto">
                   <div className="flex flex-col">
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Desde</span>
                     <span className="text-3xl font-black text-[#00d1c1]">${tour.price} <small className="text-xs text-gray-400">USD</small></span>
                   </div>
                   <button 
                     onClick={(e) => { e.stopPropagation(); setSelectedTour(tour); setIsBookingOpen(true); }}
-                    className="bg-[#0f3d3e] text-white w-14 h-14 rounded-2xl flex items-center justify-center hover:bg-[#00d1c1] transition-colors shadow-lg"
+                    className="bg-[#0f3d3e] text-white w-14 h-14 rounded-2xl flex items-center justify-center hover:bg-[#00d1c1] active:scale-90 transition-all shadow-lg"
                   >
                     <ChevronRight size={24} />
                   </button>
@@ -193,7 +196,7 @@ export default function TourBookingPage() {
         <span className="hidden md:inline">¿Alguna duda?</span>
       </a>
 
-      {/* --- BOOKING MODAL --- (Atomic Update - Validation & Summary) */}
+      {/* --- BOOKING MODAL --- (Atomic Update) */}
       <AnimatePresence>
         {isBookingOpen && (
           <motion.div 
